@@ -1,0 +1,66 @@
+apply plugin:   'groovy'
+
+repositories {
+    // Jenkins-old
+    maven {
+       url "http://nexus.nespresso.com/content/repositories/jenkins-old/"
+    }
+
+    // Jenkins all
+    maven {
+       url "http://nexus.nespresso.com/content/groups/jenkins-all/"
+    }
+    // Maven central
+    maven {
+       url "http://nexus.nespresso.com/content/repositories/central/"
+    }
+}
+
+dependencies {
+
+    compile gradleApi()
+    compile localGroovy()
+
+    compile 'org.codehaus.groovy:groovy-all:2.4.11'
+    compile 'org.jvnet.hudson.main:hudson-core:1.395'
+    compile 'com.cloudbees:groovy-cps:1.12'
+
+    /**
+     * JenkinsPipelineUnit for testing pipelines from:
+     * https://github.com/lesfurets/JenkinsPipelineUnit
+     */
+    testCompile 'com.lesfurets:jenkins-pipeline-unit:1.1'
+
+    /**
+     * For Spock unit tests
+     */
+    testCompile 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testCompile 'cglib:cglib-nodep:3.2.2'
+    testCompile 'org.objenesis:objenesis:1.2'
+    testCompile 'org.assertj:assertj-core:3.7.0'
+
+}
+
+test {
+    systemProperty "pipeline.stack.write", System.properties["pipeline.stack.write"]
+}
+
+groovydoc {
+    docTitle    = "[nesbase] Nestlé Jenkins Global Library"
+    windowTitle = "nesbase doc"
+    classpath   = sourceSets.main.output + classpath
+}
+
+sourceSets {
+    main {
+        groovy {
+            srcDirs = ['src', 'vars']
+        }
+    }
+
+    test {
+        groovy {
+            srcDirs= ['libraryTests/groovy']
+        }
+    }
+}
